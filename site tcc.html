@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horários Escolares</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e3f2fd; /* Azul bebê pastel */
+            color: #333;
+        }
+        header {
+            background: #a3cde7; /* Cinza puxado para azul pastel */
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        .main-container {
+            width: 100%;
+            margin: auto;
+            padding: 20px;
+            background: #f0f8ff; /* Azul bebê pastel */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #a3cde7; /* Cinza puxado para azul pastel */
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #87cefa; /* Azul bebê pastel */
+            color: white;
+        }
+        .btn-save {
+            background-color: #87cefa; /* Azul bebê pastel */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-save:hover {
+            background-color: #4682b4; /* Azul mais escuro */
+        }
+        .btn-email, .btn-message {
+            background-color: #a3cde7; /* Azul bebê pastel */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn-email:hover, .btn-message:hover {
+            background-color: #4682b4; /* Azul mais escuro */
+        }
+        .edit-input, select, input[type="text"], input[type="number"], input[type="email"] {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            background-color: #f0f8ff; /* Azul bebê pastel */
+            border: 1px solid #b0c4de; /* Cinza puxado para azul pastel */
+            border-radius: 4px;
+        }
+        .message-box, .email-box {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #b0c4de; /* Cinza puxado para azul pastel */
+            background-color: #f0f8ff; /* Azul bebê pastel */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%;
+        }
+        .modal-content label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        .modal-content input, .modal-content select {
+            margin-bottom: 10px;
+        }
+        .modal-content .btn {
+            margin-top: 10px;
+        }
+        .saving-animation {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(192, 192, 192, 0.8); /* Fundo cinza transparente */
+            color: #2c3e50;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            font-size: 18px;
+        }
+        .saving-animation i {
+            font-size: 24px;
+            color: #27ae60; /* Verde para o check-in */
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Horários Escolares</h1>
+    </header>
+
+    <div class="container main-container">
+        <h2>Horário da Semana</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Dia</th>
+                    <th>Matéria 1</th>
+                    <th>Matéria 2</th>
+                    <th>Matéria 3</th>
+                    <th>Matéria 4</th>
+                    <th>Matéria 5</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleTable">
+                <!-- Conteúdo gerado dinamicamente aqui -->
+            </tbody>
+        </table>
+
+        <div class="message-box">
+            <h3>Mensagem Automática</h3>
+            <textarea id="automaticMessage" rows="4" style="width: 100%;" placeholder="Digite sua mensagem automática aqui..."></textarea>
+            <button class="btn-message" onclick="sendMessage()">Enviar Mensagem Automática</button>
+        </div>
+
+        <div class="email-box">
+            <h3>Enviar Link do Site para Alunos</h3>
+            <form id="emailForm">
+                <label for="email">E-mail do aluno:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="button" class="btn-email" onclick="sendEmail()">Enviar E-mail</button>
+            </form>
+            <p id="emailStatus"></p>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>Editar Matéria</h3>
+            <form id="editForm">
+                <label for="edit-day">Dia:</label>
+                <input type="text" id="edit-day" class="edit-input" disabled>
+                <label for="edit-subject">Matéria:</label>
+                <select id="edit-subject" class="edit-input">
+                    <!-- Opções de matérias serão adicionadas dinamicamente -->
+                </select>
+                <label for="edit-professor">Professor:</label>
+                <input type="text" id="edit-professor" class="edit-input">
+                <label for="edit-room">Número da Sala:</label>
+                <input type="text" id="edit-room" class="edit-input">
+                <label for="edit-hours">Duração (horas):</label>
+                <input type="number" id="edit-hours" class="edit-input" min="0">
+                <label for="edit-minutes">Duração (minutos):</label>
+                <input type="number" id="edit-minutes" class="edit-input" min="0" max="59">
+                <label for="edit-type">Tipo da Aula:</label>
+                <select id="edit-type" class="edit-input">
+                    <option>Aula Teórica</option>
+                    <option>Aula Prática</option>
+                    <option>Prova</option>
+                    <option>Evento Escolar</option>
+                </select>
+                <button type="button" class="btn-save" onclick="saveEdit()">Salvar</button>
+                <button type="button" class="btn" onclick="closeEditModal()">Fechar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Animação de Salvamento -->
+    <div class="saving-animation" id="savingAnimation">
+        <i>&#10003;</i>
+        <p>Alteração salva com sucesso!</p>
+    </div>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script type="text/javascript">
+        // Inicialização da API de EmailJS
+        (function(){
+            emailjs.init("ZoCaWoudqnViLh95x");
+        })();
+
+        const scheduleData = {
+            'Segunda-feira': [
+                { subject: 'Matemática', professor: 'Prof. A', room: '101', type: 'Teórica', duration: 50 },
+                { subject: 'Português', professor: 'Prof. B', room: '102', type: 'Teórica', duration: 90 },
+                { subject: 'História', professor: 'Prof. C', room: '103', type: 'Prática', duration: 60 },
+                { subject: 'Geografia', professor: 'Prof. D', room: '104', type: 'Teórica', duration: 75 },
+                { subject: 'Educação Física', professor: 'Prof. F', room: '106', type: 'Prática', duration: 70 }
+            ],
+            'Terça-feira': [
+                { subject: 'Matemática', professor: 'Prof. A', room: '101', type: 'Teórica', duration: 60 },
+                { subject: 'Educação Física', professor: 'Prof. F', room: '106', type: 'Prática', duration: 50 },
+                { subject: 'Artes', professor: 'Prof. G', room: '107', type: 'Prática', duration: 75 },
+                { subject: 'Português', professor: 'Prof. B', room: '102', type: 'Teórica', duration: 90 },
+                { subject: 'Ciências', professor: 'Prof. E', room: '105', type: 'Prática', duration: 55 }
+            ],
+            'Quarta-feira': [
+                { subject: 'História', professor: 'Prof. C', room: '103', type: 'Teórica', duration: 45 },
+                { subject: 'Geografia', professor: 'Prof. D', room: '104', type: 'Teórica', duration: 60 },
+                { subject: 'Matemática', professor: 'Prof. A', room: '101', type: 'Prática', duration: 80 },
+                { subject: 'Português', professor: 'Prof. B', room: '102', type: 'Prática', duration: 50 },
+                { subject: 'Educação Física', professor: 'Prof. F', room: '106', type: 'Prática', duration: 65 }
+            ],
+            'Quinta-feira': [
+                { subject: 'Artes', professor: 'Prof. G', room: '107', type: 'Prática', duration: 60 },
+                { subject: 'História', professor: 'Prof. C', room: '103', type: 'Teórica', duration: 45 },
+                { subject: 'Geografia', professor: 'Prof. D', room: '104', type: 'Prática', duration: 90 },
+                { subject: 'Matemática', professor: 'Prof. A', room: '101', type: 'Teórica', duration: 55 },
+                { subject: 'Ciências', professor: 'Prof. E', room: '105', type: 'Teórica', duration: 75 }
+            ],
+            'Sexta-feira': [
+                { subject: 'Português', professor: 'Prof. B', room: '102', type: 'Teórica', duration: 50 },
+                { subject: 'Ciências', professor: 'Prof. E', room: '105', type: 'Prática', duration: 80 },
+                { subject: 'Educação Física', professor: 'Prof. F', room: '106', type: 'Prática', duration: 60 },
+                { subject: 'Artes', professor: 'Prof. G', room: '107', type: 'Prática', duration: 45 },
+                { subject: 'História', professor: 'Prof. C', room: '103', type: 'Teórica', duration: 90 }
+            ]
+        };
+
+        function loadSchedule() {
+            const scheduleTable = document.getElementById('scheduleTable');
+            scheduleTable.innerHTML = '';
+
+            for (const day in scheduleData) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${day}</td>`;
+                const subjects = scheduleData[day];
+                for (let i = 0; i < 5; i++) {
+                    if (i < subjects.length) {
+                        row.innerHTML += `<td onclick="editSubject('${day}', '${subjects[i].subject}')">${subjects[i].subject}</td>`;
+                    } else {
+                        row.innerHTML += '<td></td>';
+                    }
+                }
+                scheduleTable.appendChild(row);
+            }
+        }
+
+        function editSubject(day, subjectName) {
+            const modal = document.getElementById('editModal');
+            const editDay = document.getElementById('edit-day');
+            const editSubject = document.getElementById('edit-subject');
+            const editProfessor = document.getElementById('edit-professor');
+            const editRoom = document.getElementById('edit-room');
+            const editHours = document.getElementById('edit-hours');
+            const editMinutes = document.getElementById('edit-minutes');
+            const editType = document.getElementById('edit-type');
+
+            const subject = scheduleData[day].find(sub => sub.subject === subjectName);
+
+            if (!subject) return;
+
+            editDay.value = day;
+            editSubject.innerHTML = '';
+            const subjects = ['Matemática', 'Português', 'História', 'Geografia', 'Artes', 'Ciências', 'Educação Física'];
+            subjects.forEach(sub => {
+                const option = document.createElement('option');
+                option.value = sub;
+                option.textContent = sub;
+                if (sub === subject.subject) {
+                    option.selected = true;
+                }
+                editSubject.appendChild(option);
+            });
+            editProfessor.value = subject.professor;
+            editRoom.value = subject.room;
+            const duration = subject.duration;
+            editHours.value = Math.floor(duration / 60);
+            editMinutes.value = duration % 60;
+            editType.value = subject.type;
+
+            modal.style.display = 'flex';
+        }
+
+        function saveEdit() {
+            const day = document.getElementById('edit-day').value;
+            const subjectName = document.getElementById('edit-subject').value;
+            const professor = document.getElementById('edit-professor').value;
+            const room = document.getElementById('edit-room').value;
+            const hours = parseInt(document.getElementById('edit-hours').value);
+            const minutes = parseInt(document.getElementById('edit-minutes').value);
+            const type = document.getElementById('edit-type').value;
+            const duration = (hours * 60) + minutes;
+
+            const subject = scheduleData[day].find(sub => sub.subject === subjectName);
+            if (subject) {
+                subject.professor = professor;
+                subject.room = room;
+                subject.duration = duration;
+                subject.type = type;
+            } else {
+                // Caso o horário não exista, adicione-o.
+                if (!scheduleData[day]) {
+                    scheduleData[day] = [];
+                }
+                scheduleData[day].push({
+                    subject: subjectName,
+                    professor: professor,
+                    room: room,
+                    duration: duration,
+                    type: type
+                });
+            }
+
+            closeEditModal();
+            loadSchedule();
+            showSavingAnimation();
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'none';
+        }
+
+        function showSavingAnimation() {
+            const animation = document.getElementById('savingAnimation');
+            animation.style.display = 'block';
+
+            setTimeout(() => {
+                animation.style.display = 'none';
+            }, 2000);
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('automaticMessage').value;
+            alert(`Mensagem enviada: ${message}`);
+        }
+
+        function sendEmail() {
+            const email = document.getElementById('email').value;
+            const emailStatus = document.getElementById('emailStatus');
+
+            emailjs.send("service_pIntegrador", "template_c8t6245", {
+                to_email: email,
+                message: "Link do site: https://projetoddsintegrador.github.io/IntegradorHorario/"
+            }).then(response => {
+                emailStatus.textContent = "E-mail enviado com sucesso!";
+            }, error => {
+                emailStatus.textContent = "Erro ao enviar o e-mail.";
+            });
+        }
+
+        window.onload = loadSchedule;
+    </script>
+</body>
+</html>

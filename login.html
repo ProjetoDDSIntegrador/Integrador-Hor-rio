@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Login</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%); /* Branco meio cinza */
+            overflow: hidden; /* Para garantir que a animação não cause barras de rolagem */
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .light-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(173, 216, 230, 0.5) 50%, rgba(173, 216, 230, 0.1) 100%);
+            background-size: 200% 200%;
+            animation: lightAnimation 8s linear infinite;
+            pointer-events: none; /* Para garantir que a animação não interfira com a interação do usuário */
+        }
+
+        @keyframes lightAnimation {
+            0% {
+                background-position: 0% 0%;
+            }
+            25% {
+                background-position: 100% 0%;
+            }
+            50% {
+                background-position: 100% 100%;
+            }
+            75% {
+                background-position: 0% 100%;
+            }
+            100% {
+                background-position: 0% 0%;
+            }
+        }
+
+        .login-container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            position: relative; /* Para que o container fique acima da animação */
+            z-index: 1;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-container h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .login-container input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .login-container button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4a90e2;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-container button:hover {
+            background-color: #357abd;
+        }
+
+        .icon {
+            font-size: 50px;
+            color: #4a90e2;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="light-animation"></div>
+    <div class="login-container">
+        <div class="icon">
+            <img src="https://img.icons8.com/ios/50/4a90e2/login-rounded-right.png" alt="Login Icon">
+        </div>
+        <h1>Login</h1>
+        <input type="text" id="username" placeholder="Login">
+        <input type="password" id="password" placeholder="Senha">
+        <button onclick="handleLogin()">Logar</button>
+    </div>
+
+    <script>
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'admin' && password === 'admin') {
+                // Redireciona para a página do administrador
+                window.location.href = 'file:///C:/Microsoft/Microsoft/tcc/site%20tcc.html';
+            } else if (username === 'aluno' && password === 'aluno') {
+                // Redireciona para a página do aluno
+                window.location.href = 'https://projetoddsintegrador.github.io/IntegradorHorario/';
+            } else {
+                alert('Credenciais inválidas. Tente novamente.');
+            }
+        }
+    </script>
+</body>
+</html>
