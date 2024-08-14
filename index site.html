@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horário das Aulas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #d9e1e6;
+        }
+
+        header {
+            background-color: #a3cde7; /* Azul pastel */
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Centraliza verticalmente */
+            align-items: center; /* Centraliza horizontalmente */
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .tabela-container {
+            max-width: 1200px; /* Ajuste a largura máxima conforme necessário */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #a3cde7; /* Azul pastel */
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #e9f3fa; /* Azul claro pastel */
+        }
+
+        tr:hover {
+            background-color: #d8eaf5; /* Azul ainda mais claro */
+        }
+
+        td {
+            font-size: 14px;
+            color: #555;
+            vertical-align: top; /* Alinha o texto ao topo da célula */
+        }
+
+        footer {
+            background-color: #a3cde7; /* Azul pastel */
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Cores especiais para destaque */
+        .especial {
+            background-color: #b3e5cc; /* Verde pastel */
+            cursor: pointer;
+        }
+
+        .prova {
+            background-color: #ffb3b3; /* Vermelho pastel */
+            cursor: pointer;
+        }
+
+        .normal {
+            background-color: #a3cde7; /* Azul pastel */
+            cursor: pointer;
+        }
+
+        .legenda {
+            margin-top: 2rem; /* Adiciona espaço acima das legendas */
+            font-size: 14px;
+            color: #555;
+        }
+
+        .legenda div {
+            display: inline-block;
+            margin-right: 10px;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .legenda .legenda-especial {
+            background-color: #b3e5cc; /* Verde pastel */
+            color: #333;
+        }
+
+        .legenda .legenda-prova {
+            background-color: #ffb3b3; /* Vermelho pastel */
+            color: #333;
+        }
+
+        .legenda .legenda-normal {
+            background-color: #a3cde7; /* Azul pastel */
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Horário de Aulas - 1º ano Turno Matutino</h1>
+    </header>
+    <main>
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Horário</th>
+                        <th>Segunda-feira</th>
+                        <th>Terça-feira</th>
+                        <th>Quarta-feira</th>
+                        <th>Quinta-feira</th>
+                        <th>Sexta-feira</th>
+                    </tr>
+                </thead>
+                <tbody id="tabela-horario">
+                    <!-- A tabela será preenchida pelo JavaScript -->
+                </tbody>
+            </table>
+            <!-- Seção de legendas abaixo da tabela -->
+            <div class="legenda">
+                <div class="legenda-especial">Atividades Especiais</div>
+                <div class="legenda-prova">Provas</div>
+                <div class="legenda-normal">Aulas Normais</div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Horário de Aulas</p>
+    </footer>
+    <script>
+        const horarioAulas = [
+            {
+                horario: "07:00 - 07:45",
+                segunda: { disciplina: "MATEMÁTICA", professor: "Henrique", sala: "Sala 1" },
+                terca: { disciplina: "FÍSICA", professor: "João", sala: "Sala 2" },
+                quarta: { disciplina: "INGLÊS", professor: "Natalina", sala: "Sala 3" },
+                quinta: { disciplina: "ARTES", professor: "Maria/João", sala: "Sala 4", especial: true },
+                sexta: { disciplina: "GEOGRAFIA", professor: "Matheus", sala: "Sala 5" }
+            },
+            {
+                horario: "07:45 - 08:30",
+                segunda: { disciplina: "PORTUGUÊS", professor: "Maria", sala: "Sala 1" },
+                terca: { disciplina: "BIOLOGIA", professor: "Diego", sala: "Sala 2" },
+                quarta: { disciplina: "INGLÊS", professor: "Natalina", sala: "Sala 3" },
+                quinta: { disciplina: "HISTÓRIA", professor: "Maria/João", sala: "Sala 4", prova: true },
+                sexta: { disciplina: "FILOSOFIA", professor: "Rafael", sala: "Sala 6" }
+            },
+            {
+                horario: "08:30 - 09:15",
+                segunda: { disciplina: "FÍSICA", professor: "João", sala: "Sala 2" },
+                terca: { disciplina: "SOCIOLOGIA", professor: "Karina", sala: "Sala 3" },
+                quarta: { disciplina: "PROJETO DE VIDA", professor: "Fátima", sala: "Sala 4" },
+                quinta: { disciplina: "GEOGRAFIA", professor: "Matheus", sala: "Sala 5" },
+                sexta: { disciplina: "QUÍMICA", professor: "Pedro", sala: "Sala 7" }
+            },
+            {
+                horario: "09:30 - 10:15",
+                segunda: { disciplina: "INGLÊS", professor: "Naty/Henrique", sala: "Sala 1" },
+                terca: { disciplina: "PORTUGUÊS", professor: "Maria", sala: "Sala 2" },
+                quarta: { disciplina: "PROJETO DE VIDA", professor: "Fátima", sala: "Sala 4" },
+                quinta: { disciplina: "BIOLOGIA", professor: "Diego", sala: "Sala 2" },
+                sexta: { disciplina: "TECNOLOGIA", professor: "Neuza", sala: "Sala 3" }
+            },
+            {
+                horario: "10:15 - 11:00",
+                segunda: { disciplina: "HISTÓRIA", professor: "Isabela", sala: "Sala 3" },
+                terca: { disciplina: "PORTUGUÊS", professor: "Maria", sala: "Sala 1" },
+                quarta: { disciplina: "MATEMÁTICA", professor: "Henrique", sala: "Sala 1" },
+                quinta: { disciplina: "MATEMÁTICA", professor: "Henrique", sala: "Sala 1" },
+                sexta: { disciplina: "FILOSOFIA", professor: "Rafael", sala: "Sala 4" }
+            },
+            {
+                horario: "11:00 - 11:45",
+                segunda: { disciplina: "HISTÓRIA", professor: "Isabela", sala: "Sala 3" },
+                terca: { disciplina: "INGLÊS", professor: "Naty/Henrique", sala: "Sala 1" },
+                quarta: { disciplina: "QUÍMICA", professor: "Pedro", sala: "Sala 7" },
+                quinta: { disciplina: "MATEMÁTICA", professor: "Henrique", sala: "Sala 1" },
+                sexta: { disciplina: "SOCIOLOGIA", professor: "Karina", sala: "Sala 3" }
+            }
+        ];
+
+        function preencherTabela() {
+            const tabela = document.getElementById("tabela-horario");
+
+            horarioAulas.forEach(aula => {
+                const linha = document.createElement("tr");
+
+                const celulaHorario = document.createElement("td");
+                celulaHorario.textContent = aula.horario;
+                linha.appendChild(celulaHorario);
+
+                ["segunda", "terca", "quarta", "quinta", "sexta"].forEach(dia => {
+                    const celula = document.createElement("td");
+                    const aulaDia = aula[dia];
+                    
+                    celula.innerHTML = `
+                        <div><strong>${aulaDia.disciplina}</strong></div>
+                        <div>${aulaDia.sala}</div>
+                        <div>${aulaDia.professor}</div>
+                    `;
+
+                    if (aulaDia.especial) {
+                        celula.classList.add("especial");
+                    } else if (aulaDia.prova) {
+                        celula.classList.add("prova");
+                    } else {
+                        celula.classList.add("normal");
+                    }
+                    
+                    celula.addEventListener('click', () => {
+                        if (aulaDia.especial) {
+                            alert(`Aula especial de ${aulaDia.disciplina} com ${aulaDia.professor}`);
+                        } else if (aulaDia.prova) {
+                            alert(`Prova de ${aulaDia.disciplina} com ${aulaDia.professor}`);
+                        }
+                    });
+
+                    linha.appendChild(celula);
+                });
+
+                tabela.appendChild(linha);
+            });
+        }
+
+        preencherTabela();
+    </script>
+</body>
+</html>
