@@ -17,6 +17,22 @@
             color: #fff;
             padding: 10px 0;
             text-align: center;
+            position: relative;
+        }
+        header .btn-logoff {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff6f61; /* Laranja-avermelhado para chamar atenção */
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        header .btn-logoff:hover {
+            background-color: #e55b4d; /* Laranja-avermelhado mais escuro */
         }
         .container {
             width: 80%;
@@ -136,6 +152,7 @@
 <body>
     <header>
         <h1>Horários Escolares</h1>
+        <button class="btn-logoff" onclick="goBack()">Voltar</button>
     </header>
 
     <div class="container main-container">
@@ -212,7 +229,7 @@
     </div>
 
     <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
 
     <script type="text/javascript">
         // Inicialização da API de EmailJS
@@ -379,6 +396,10 @@
             }, error => {
                 emailStatus.textContent = "Erro ao enviar o e-mail.";
             });
+        }
+
+        function goBack() {
+            window.history.back();
         }
 
         window.onload = loadSchedule;
