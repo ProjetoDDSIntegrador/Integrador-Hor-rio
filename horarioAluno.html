@@ -142,7 +142,7 @@
 </head>
 <body>
     <header>
-        <button class="btn-logoff" onclick="goBack()">Voltar</button>
+        <button class="btn-logoff" onclick="logoff()">Logoff</button>
         <h1>Horário de Aulas - 1º ano Turno Matutino</h1>
     </header>
     <main>
@@ -268,8 +268,17 @@
             });
         }
 
-        function goBack() {
-            window.history.back();
+        function logoff() {
+            // Limpa os campos de login e senha, se existirem no localStorage
+            if (localStorage.getItem('login')) {
+                localStorage.removeItem('login');
+            }
+            if (localStorage.getItem('senha')) {
+                localStorage.removeItem('senha');
+            }
+
+            // Redireciona para a página de login
+            window.location.href = 'login.html'; // Substitua pelo caminho correto para a página de login
         }
 
         preencherTabela();
